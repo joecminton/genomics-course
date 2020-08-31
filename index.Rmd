@@ -1,0 +1,12 @@
+---
+title: "Evolutionary Genomics & Bioinformatics"
+author: "Joe Minton"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[Lab1](lab1_joeminton.html)
