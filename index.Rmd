@@ -2,7 +2,7 @@
 title: "Evolutionary Genomics & Bioinformatics"
 author: "Joe Minton"
 output: html_document
-bibliography: references.bib
+bibliography: data/references.bib
 ---
 
 ```{r setup, include=FALSE}
