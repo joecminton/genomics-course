@@ -14,3 +14,4 @@ knitr::opts_chunk$set(echo = TRUE)
 [Lab2](lab2_joeminton.html)
 
 [Lab3a](lab3a_joeminton.html)
+
