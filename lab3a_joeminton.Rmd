@@ -1,5 +1,7 @@
 ---
 title: "Lab 3A"
+author: Joe Minton
+date: 09/07/2020
 output: html_document
 ---
 
