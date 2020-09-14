@@ -112,13 +112,13 @@ ggplot(data = deaths_report_03_12_2020, mapping = aes(x = Country_Region, y = De
 
 ## 6
 
-ggplot(data = confirmed_report_09_12_2020, mapping = aes(x = Country_Region, y = Confirmed)) + geom_boxplot() 
+ggplot(data = confirmed_report_09_12_2020, mapping = aes(x = Country_Region, y = Confirmed)) + geom_bar(stat = "identity")
 
-ggplot(data = deaths_report_09_12_2020, mapping = aes(x = Country_Region, y = Deaths)) + geom_boxplot() 
+ggplot(data = deaths_report_09_12_2020, mapping = aes(x = Country_Region, y = Deaths)) + geom_bar(stat = "identity")
 
-ggplot(data = confirmed_report_03_12_2020, mapping = aes(x = Country_Region, y = Confirmed)) + geom_boxplot() 
+ggplot(data = confirmed_report_03_12_2020, mapping = aes(x = Country_Region, y = Confirmed)) + geom_bar(stat = "identity")
 
-ggplot(data = deaths_report_03_12_2020, mapping = aes(x = Country_Region, y = Deaths)) + geom_boxplot() 
+ggplot(data = deaths_report_03_12_2020, mapping = aes(x = Country_Region, y = Deaths)) + geom_bar(stat = "identity")
 
 ```
 
