@@ -1,0 +1,132 @@
+---
+title: "Lab 4A"
+author: "Joe Minton"
+date: "09/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+```
+
+```{r}
+surveys_complete <- read.csv("data/surveys_complete.csv")
+```
+
+## To build a ggplot, use the function format:
+ggplot2(data = <DATA>, mapping = aes (<MAPPINGS>)) + <GEOM_FUNCTION> ()
+```{r}
+ggplot(data = surveys_complete)
+
+## define aesthetic mapping (using aes function), by selecting variables to be potted and spcify how to present them (e.g., x/y poistions or characteristics or size, shape, color)
+
+ggplot(data = surveys_complete, mapping = aes(x=weight, y=hindfoot_length))
+
+## add "geoms" - graphical representations of the data in the plot (point, lines, bars). ggplot2 offers many different geoms
+
+ggplot(data = surveys_complete, aes(x = weight, y = hindfoot_length)) + geom_point()
+```
+```
+
+## Assign plot to a variable
+```{r}
+surveys_plot <- ggplot(data = surveys_complete, mapping = aes(x = weight, y = hindfoot_length))
+```
+
+## Draw the plot
+```{r}
+surveys_plot + geom_point()
+```
+
+## Challenge 1: Allows hexagonal binning
+```{r}
+install.packages("hexbin")
+library("hexbin")
+
+surveys_plot <- ggplot(data = surveys_complete, mapping = aes(x = weight, y = hindfoot_length))
+
+surveys_plot +
+  geom_hex ()
+  
+## The strengths of the hexagonal has a key that shows a color code for regions of concentration (e.g., more point, the ligher blue it gets). For weaknesses, outliers are not as apparent and the shape slightly changes, showing a condensed graph. 
+```
+
+## To begin building plot, we start by defining the dataset, the axes, and choose a geom:
+```{r}
+ggplot(data = surveys_complete, aes(x = weight, y = hindfoot_length)) +
+    geom_point()
+```
+
+## Transparency (alpha) can be added to avoid overplotting
+```{r}
+ggplot(data = surveys_complete, aes(x = weight, y = hindfoot_length)) +
+    geom_point(alpha = 0.1)
+```
+
+## To add colors for all points
+```{r}
+ggplot(data = surveys_complete, mapping = aes(x = weight, y = hindfoot_length)) +
+    geom_point(alpha = 0.1, color = "blue")
+```
+
+## To add colors to indivdual points, you cause use color and labeling that specific vector
+```{r}
+ggplot(data = surveys_complete, mapping = aes(x = weight, y = hindfoot_length)) +
+    geom_point(alpha = 0.1, aes(color = species_id))
+```
+
+## Challenge Set 2
+```{r}
+## Use what you learned to create a scatter plot of weight over species with the plot types showing in different colors. Is this a good way to show data?
+
+ggplot(data = surveys_complete, 
+       mapping = aes(x = species_id, y = weight)) +
+   geom_point(aes(color = plot_type))
+```
+
+## Boxplots
+```{r}
+## Visualizing weight distribution within each species
+ggplot(data = surveys_complete, mapping = aes(x = species_id, y = weight)) +
+    geom_boxplot()
+```
+
+## Adding points to the boxplot, we can see a better idea of number of measurements and of their distribution
+```{r}
+ggplot(data = surveys_complete, mapping = aes(x = species_id, y = weight)) +
+    geom_boxplot(alpha = 0) +
+    geom_jitter(alpha = 0.3, color = "tomato")
+    
+## Jitter adds the points on top of the box plot, showing the range, means, quartiles, etc.
+```
+
+## Challenge Set 3
+```{r}
+## violin plot or bean plot can show the shape of the distribution
+ggplot(data = surveys_complete, mapping = aes(x = species_id, y = weight)) +
+    geom_violin(alpha = 0) +
+    geom_jitter(alpha = 0.3, color = "tomato")
+
+## changing the scale of the axes can show a better distribution of the data
+
+ggplot(data = surveys_complete, mapping = aes(x = species_id, y = weight)) +
+    geom_violin(alpha = 0) +
+    geom_jitter(alpha = 0.3, color = "tomato") +
+    scale_y_log10()
+
+## making a new plot to explore the distribution of another variable within each species
+
+ggplot(data = surveys_complete, mapping = aes(x = species_id, y = hindfoot_length)) +
+geom_jitter(aes(color = plot_id)) +
+geom_boxplot(color = "pink")
+
+## changing plot_id from integer to factor
+
+ggplot(data = surveys_complete, mapping = aes(x = species_id, y = hindfoot_length)) +
+geom_jitter(aes(color = factor(c(plot_id)))) +
+geom_boxplot(color = "black")
+```
