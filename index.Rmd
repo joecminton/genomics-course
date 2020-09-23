@@ -9,6 +9,9 @@ bibliography: data/references.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+![Here is a picture of me enjoying a cupcake at my brother's wedding!](images/IMG_7120.jpeg)
+
+
 [Lab1](lab1_joeminton.html) 
 
 [Lab2](lab2_joeminton.html)
