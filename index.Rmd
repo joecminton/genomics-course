@@ -12,15 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ![Here is a picture of me enjoying a cupcake at my brother's wedding!](images/IMG_7120.jpeg)
 
 
-[Lab1](lab1_joeminton.html) 
+[Lab 1: Introduction to R and Reproducible Research](lab1_joeminton.html) 
 
-[Lab2](lab2_joeminton.html)
+[Lab 2: git, GitHub, and Rstudio projects](lab2_joeminton.html)
 
-[Lab3a](lab3a_joeminton.html)
+[Lab 3a: Data Wrangling](lab3a_joeminton.html)
 
-[Lab3b](lab3b_joeminton.html)
+[Lab 3b: Data Wrangling](lab3b_joeminton.html)
 
-[Lab4](lab4_joeminton.html)
+[Lab 4: Data Wrangling and Graphing COVID-19 reporting data](lab4_joeminton.html)
 
-[Lab4a](lab4a_joeminton.html)
+[Lab 4a](lab4a_joeminton.html)
 
