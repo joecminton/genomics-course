@@ -20,7 +20,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [Lab 3b: Data Wrangling](lab3b_joeminton.html)
 
-[Lab 4: Data Wrangling and Graphing COVID-19 reporting data](lab4_joeminton.html)
+[Lab: Data Visualization](labDataVisualization_joeminton.html)
 
-[Lab 4a](lab4a_joeminton.html)
+[Lab 4: Data Wrangling and Graphing COVID-19 Reporting Data (Part 1)](lab4_joeminton.html)
+
+[Lab 5: Data Wrangling and Graphing COVID-19 Reporting Data (Part 2)](lab5_joeminton.html)
+
+[Lab 5 Extra: Interactive Graphs and Animations fom the COVID-19 Reporting Data](lab5extra.html)
+
+
 
