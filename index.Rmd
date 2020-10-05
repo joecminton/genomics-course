@@ -28,5 +28,5 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [Lab 5 Extra: Interactive Graphs and Animations fom the COVID-19 Reporting Data](lab5extra.html)
 
-
+[Lab 6: Data Maps and Interactive Graphs from the COVID-19 Reporting Data](Lab6.html)
 
