@@ -1,0 +1,123 @@
+---
+title: "Lab 4"
+author: "Joe Minton"
+date: "09/14/2020" 
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+report_03_11_2020 <-   read_csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-11-2020.csv")) %>%
+
+  rename(Country_Region = "Country/Region", Province_State = "Province/State")
+```
+
+```{r}
+str(report_03_11_2020)
+```
+
+```{r}
+view(report_03_11_2020)
+```
+
+```{r}
+library(DT)
+datatable(report_03_11_2020)
+```
+
+## Exercise 1
+```{r}
+## 1
+report_03_13_2020 <- read_csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-13-2020.csv")) %>% 
+rename(Country_Region = "Country/Region", Province_State = "Province/State")
+
+report_09_13_2020 <- read_csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/09-13-2020.csv"))
+
+str(report_03_13_2020) 
+view(report_03_13_2020)
+
+str(report_09_13_2020)
+view(report_09_13_2020)
+
+## The report from 09/13/2020 has more columns (14) that include active reported cases, incidence rates, case-fatality ratios, has a total of 3,954 entries, and Maharashtra, India has the most confirmed cases. The report from 03/13/2020 only has 230 entries, 8 columns, is lacking the previously mentioned columns, and Hubei, China has the most confirmed cases.
+
+## 2
+report_09_13_2020 %>% 
+  group_by(Country_Region) %>% 
+  summarize(Confirmed = sum(Confirmed), Deaths = sum(Deaths), Recovered = sum(Recovered), Active = sum(Active))
+
+## 3
+report_09_13_2020 %>% 
+  filter(Country_Region == "US") %>% 
+  group_by(Province_State) %>% 
+  summarize(Confirmed = sum(Confirmed))
+
+## 4
+report_09_13_2020 %>% 
+  group_by(Country_Region) %>%
+  summarize(Deaths = sum(Deaths)) %>% 
+  arrange(desc(Deaths)) %>% 
+slice(1:10)
+```
+
+```{r}
+report_03_12_2020 <-
+  read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-12-2020.csv") %>% 
+rename(Country_Region = "Country/Region", Province_State = "Province/State")
+
+report_09_12_2020 <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/09-12-2020.csv")
+```
+
+## Exercise 2
+```{r}
+## 5
+confirmed_report_09_12_2020 <- report_09_12_2020 %>% 
+  group_by(Country_Region) %>%
+  summarize(Confirmed = sum(Confirmed)) %>% 
+  arrange(desc(Confirmed)) %>% 
+slice(1:10)
+
+deaths_report_09_12_2020 <- report_09_12_2020 %>% 
+  group_by(Country_Region) %>%
+  summarize(Deaths = sum(Deaths)) %>% 
+  arrange(desc(Deaths)) %>% 
+slice(1:10)
+
+ggplot(data = confirmed_report_09_12_2020, mapping = aes(x = Country_Region, y = Confirmed)) + geom_point() 
+
+ggplot(data = deaths_report_09_12_2020, mapping = aes(x = Country_Region, y = Deaths)) + geom_point() 
+
+confirmed_report_03_12_2020 <- report_03_12_2020 %>% 
+  group_by(Country_Region) %>%
+  summarize(Confirmed = sum(Confirmed), Deaths = sum(Deaths)) %>% 
+  arrange(desc(Confirmed)) %>% 
+slice(1:10)
+
+deaths_report_03_12_2020 <- report_03_12_2020 %>% 
+  group_by(Country_Region) %>%
+  summarize(Deaths = sum(Deaths)) %>% 
+  arrange(desc(Deaths)) %>% 
+slice(1:10)
+
+ggplot(data = confirmed_report_03_12_2020, mapping = aes(x = Country_Region, y = Confirmed)) + geom_point() 
+
+ggplot(data = deaths_report_03_12_2020, mapping = aes(x = Country_Region, y = Deaths)) + geom_point() 
+
+## 6
+
+ggplot(data = confirmed_report_09_12_2020, mapping = aes(x = Confirmed, y = Country_Region)) + geom_bar(stat = "identity")
+
+ggplot(data = deaths_report_09_12_2020, mapping = aes(x = Deaths, y = Country_Region)) + geom_bar(stat = "identity")
+
+ggplot(data = confirmed_report_03_12_2020, mapping = aes(x = Confirmed, y = Country_Region)) + geom_bar(stat = "identity")
+
+ggplot(data = deaths_report_03_12_2020, mapping = aes(x = Deaths, y = Country_Region)) + geom_bar(stat = "identity")
+```
+
