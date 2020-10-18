@@ -2,24 +2,14 @@
 title: "Evolutionary Genomics & Bioinformatics"
 author: "Joe Minton"
 output: html_document
-<<<<<<< HEAD
 bibliography: references.bib
-=======
-bibliography: data/references.bib
->>>>>>> a98e79f2e3d3446230d45fd93e40690e2e032c53
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<<<<<<< HEAD
-[Lab1](lab1_joeminton.html) 
-
-[Lab2](lab2_joeminton.html)
-=======
 ![Here is a picture of me enjoying a cupcake at my brother's wedding!](images/IMG_7120.jpeg)
-
 
 [Lab 1: Introduction to R and Reproducible Research](lab1_joeminton.html) 
 
