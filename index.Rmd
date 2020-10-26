@@ -31,3 +31,5 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [Lab 7:  RNA-Seq workflow: gene-level exploratory analysis and differential expression](Lab7_joeminton.html)
 
+[Lab 8: Sequence Alignment, Phylogenetic Analysis, and Tree Visualization](lab8_jm.Rmd)
+

@@ -170,7 +170,7 @@ library("magrittr")
 gse$dex %<>% relevel("untrt")
 gse$dex
 ```
-# %<>% is a compund assignment pipe-operater that allow concise expression
+# %<>% is a compound assignment pipe-operater that allow concise expression
 ```{r}
 gse$dex <- relevel(gse$dex, "untrt")
 ```
