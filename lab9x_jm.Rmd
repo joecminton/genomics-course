@@ -1,0 +1,216 @@
+---
+title: "Lab 9x: Programming in R-Control Structures and Functions"
+name: "Joe Minton"
+date: "10/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Control Structures
+
+# if and else: testing a condition and acting on it
+# for: execute a loop a fixed number of times
+# while: execute a loop while a condition is true
+
+# Conditional statements with if-else
+```{r, eval = FALSE}
+# test a condition and act on it depending on whether it is true or false
+if(<conditional statement>){
+  ## do something
+}
+# Continue with rest of code
+```
+
+```{r, eval = FALSE}
+# above code does nothing if condition is false; must have action to execute when condition is false, then you need an else clause
+if(<conditional statement>){
+  # do something
+}
+else{
+  # do something else
+}
+```
+```{r, eval = FALSE, warning=FALSE}
+# can have series of tests by following the initial if with any number of else ifs
+
+if(<conditional statement>) {
+  # do something
+} else if(<conditional statement>) {
+  # do something different
+} else {
+  # do something else
+}
+```
+
+# example of valid if/else structure
+```{r, warning = FALSE, eval = FALSE}
+# Generate a uniform random number
+x <- runif(2,0,20)
+if (x > 2) {
+  y < - 20
+} else {
+  y <- 0
+}
+```
+
+## Important Operators 
+
+# Comparison Operators
+# == (equal)
+# != (not equal)
+# > (greater than)
+# >= (greater than or equal)
+# < (less than)
+# <= (less than or equal)
+
+# Logical Operators
+# & (and)
+# | (or)
+# ! (not)
+
+## for Loops
+# in R, for loops take an interator variable and assign it successive values from a sequence or vector
+```{r}
+for(i in 0:14){
+  print(i)
+}
+```
+# loop takes i variable and in each iteration of the loop gives it values 0-14 and executes the code within brackets
+```{r}
+y <- c("j", "k", "l", "m")
+for(i in 1:4)  {
+  print(y[i])
+}
+```
+
+```{r}
+# do not need to use index variable
+for(letter in y) {
+  print(letter)
+}
+```
+
+```{r}
+# one line loops do not need curly braces
+for(i in 1:4) print(y[i])
+```
+
+## Nested for loops
+# for loops can be nested inside of each other
+```{r}
+q <- matrix(1:10, 4, 5)
+for(i in seq_len(nrow(q))) {
+  for (j in seq_len(ncol(q))) {
+    print(q[i, j])
+  }
+}
+```
+# use nested loops for multidimensional data structures
+
+## while loops
+# while loops begin by testing a condition; if true, then execute loop body; loops exits when condition is false
+```{r}
+count <- 0
+while(count < 14) {
+  print(count)
+  count <- count +2 
+}
+```
+# while loops can result in infinitie loops if not wrtten properly
+
+```{r}
+z <- 10
+set.seed(2)
+while(z >= 6 && z <= 20) {
+  coin <- rbinom(2, 2, 1)
+  
+  if(coin == 2){
+    z <- z +2
+  } else {
+    z <- z - 2
+  }
+}
+print(z)
+```
+
+## Functions
+# first class objects, which means that they can be treated much like any other R object
+
+# first function
+```{r}
+# definedby using function()
+
+ f <- function() {
+   ## this is an empty function
+ }
+ ## functions have theur own class
+class(f)
+  ## execute function
+ f()
+```
+
+# create function that has a non-trivial function body
+```{r}
+f <- function() {
+  cat("Go, UMass!\n")
+}
+f()
+```
+
+# function arguements
+```{r}
+# can say how many time to run argument
+f <- function(num) {
+  for(i in seq_len(num)) {
+    cat("Go, UMass!\n")
+  }
+}
+f(3)
+```
+# tells you how many characters are in a function
+```{r}
+f <- function(num) {
+  go <- "Go, UMass!\n"
+  for(i in seq_len(num)) {
+    cat(go)
+  }
+  chars <- nchar(go) * num
+  chars
+}
+umassmotto <- f(3)
+print(umassmotto)
+```
+# if num not specified, R provides an error
+```{r, warning = FALSE, eval = FALSE}
+f()
+```
+# can prevent error by setting default value to num
+```{r}
+f <- function(num = 2) {
+  go <- "Go, UMass!\n"
+  for(i in seq_len(num)) {
+    cat(go)
+  }
+  chars <- nchar(go) * num
+  chars
+}
+f()
+f(4)
+```
+
+# functions have named arguments
+```{r}
+f(num = 2)
+```
+
+
+
+
+
+
+
+
+
