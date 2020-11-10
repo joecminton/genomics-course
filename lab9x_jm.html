@@ -418,15 +418,9 @@ summary {
 
 <div id="control-structures" class="section level2">
 <h2>Control Structures</h2>
-</div>
-<div id="if-and-else-testing-a-condition-and-acting-on-it" class="section level1">
-<h1>if and else: testing a condition and acting on it</h1>
-</div>
-<div id="for-execute-a-loop-a-fixed-number-of-times" class="section level1">
-<h1>for: execute a loop a fixed number of times</h1>
-</div>
-<div id="while-execute-a-loop-while-a-condition-is-true" class="section level1">
-<h1>while: execute a loop while a condition is true</h1>
+<pre class="r"><code># if and else: testing a condition and acting on it
+# for: execute a loop a fixed number of times
+# while: execute a loop while a condition is true</code></pre>
 </div>
 <div id="conditional-statements-with-if-else" class="section level1">
 <h1>Conditional statements with if-else</h1>
@@ -463,46 +457,21 @@ if (x &gt; 2) {
 }</code></pre>
 <div id="important-operators" class="section level2">
 <h2>Important Operators</h2>
-</div>
-</div>
-<div id="comparison-operators" class="section level1">
-<h1>Comparison Operators</h1>
-</div>
-<div id="equal" class="section level1">
-<h1>== (equal)</h1>
-</div>
-<div id="not-equal" class="section level1">
-<h1>!= (not equal)</h1>
-</div>
-<div id="greater-than" class="section level1">
-<h1>&gt; (greater than)</h1>
-</div>
-<div id="greater-than-or-equal" class="section level1">
-<h1>&gt;= (greater than or equal)</h1>
-</div>
-<div id="less-than" class="section level1">
-<h1>&lt; (less than)</h1>
-</div>
-<div id="less-than-or-equal" class="section level1">
-<h1>&lt;= (less than or equal)</h1>
-</div>
-<div id="logical-operators" class="section level1">
-<h1>Logical Operators</h1>
-</div>
-<div id="and" class="section level1">
-<h1>&amp; (and)</h1>
-</div>
-<div id="or" class="section level1">
-<h1>| (or)</h1>
-</div>
-<div id="not" class="section level1">
-<h1>! (not)</h1>
-<div id="for-loops" class="section level2">
-<h2>for Loops</h2>
-</div>
-</div>
-<div id="in-r-for-loops-take-an-interator-variable-and-assign-it-successive-values-from-a-sequence-or-vector" class="section level1">
-<h1>in R, for loops take an interator variable and assign it successive values from a sequence or vector</h1>
+<pre class="r"><code># Comparison Operators
+# == (equal)
+# != (not equal)
+# &gt; (greater than)
+# &gt;= (greater than or equal)
+# &lt; (less than)
+# &lt;= (less than or equal)
+
+# Logical Operators
+# &amp; (and)
+# | (or)
+# ! (not)
+
+## for Loops
+# in R, for loops take an interator variable and assign it successive values from a sequence or vector</code></pre>
 <pre class="r"><code>for(i in 0:14){
   print(i)
 }</code></pre>
@@ -521,6 +490,7 @@ if (x &gt; 2) {
 ## [1] 12
 ## [1] 13
 ## [1] 14</code></pre>
+</div>
 </div>
 <div id="loop-takes-i-variable-and-in-each-iteration-of-the-loop-gives-it-values-0-14-and-executes-the-code-within-brackets" class="section level1">
 <h1>loop takes i variable and in each iteration of the loop gives it values 0-14 and executes the code within brackets</h1>
@@ -548,10 +518,7 @@ for(i in 1:4) print(y[i])</code></pre>
 ## [1] &quot;m&quot;</code></pre>
 <div id="nested-for-loops" class="section level2">
 <h2>Nested for loops</h2>
-</div>
-</div>
-<div id="for-loops-can-be-nested-inside-of-each-other" class="section level1">
-<h1>for loops can be nested inside of each other</h1>
+<pre class="r"><code># for loops can be nested inside of each other</code></pre>
 <pre class="r"><code>q &lt;- matrix(1:10, 4, 5)
 for(i in seq_len(nrow(q))) {
   for (j in seq_len(ncol(q))) {
@@ -578,15 +545,10 @@ for(i in seq_len(nrow(q))) {
 ## [1] 2
 ## [1] 6
 ## [1] 10</code></pre>
-</div>
-<div id="use-nested-loops-for-multidimensional-data-structures" class="section level1">
-<h1>use nested loops for multidimensional data structures</h1>
-<div id="while-loops" class="section level2">
-<h2>while loops</h2>
-</div>
-</div>
-<div id="while-loops-begin-by-testing-a-condition-if-true-then-execute-loop-body-loops-exits-when-condition-is-false" class="section level1">
-<h1>while loops begin by testing a condition; if true, then execute loop body; loops exits when condition is false</h1>
+<pre class="r"><code># use nested loops for multidimensional data structures
+
+## while loops
+# while loops begin by testing a condition; if true, then execute loop body; loops exits when condition is false</code></pre>
 <pre class="r"><code>count &lt;- 0
 while(count &lt; 14) {
   print(count)
@@ -599,6 +561,7 @@ while(count &lt; 14) {
 ## [1] 8
 ## [1] 10
 ## [1] 12</code></pre>
+</div>
 </div>
 <div id="while-loops-can-result-in-infinitie-loops-if-not-wrtten-properly" class="section level1">
 <h1>while loops can result in infinitie loops if not wrtten properly</h1>
@@ -634,14 +597,10 @@ while(z &gt;= 6 &amp;&amp; z &lt;= 20) {
 <pre><code>## [1] 22</code></pre>
 <div id="functions" class="section level2">
 <h2>Functions</h2>
-</div>
-</div>
-<div id="first-class-objects-which-means-that-they-can-be-treated-much-like-any-other-r-object" class="section level1">
-<h1>first class objects, which means that they can be treated much like any other R object</h1>
-</div>
-<div id="first-function" class="section level1">
-<h1>first function</h1>
-<pre class="r"><code># definedby using function()
+<pre class="r"><code># first class objects, which means that they can be treated much like any other R object
+
+# first function</code></pre>
+<pre class="r"><code># defined by using function()
 
  f &lt;- function() {
    ## this is an empty function
@@ -652,6 +611,7 @@ class(f)</code></pre>
 <pre class="r"><code>  ## execute function
  f()</code></pre>
 <pre><code>## NULL</code></pre>
+</div>
 </div>
 <div id="create-function-that-has-a-non-trivial-function-body" class="section level1">
 <h1>create function that has a non-trivial function body</h1>

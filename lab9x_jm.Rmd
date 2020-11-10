@@ -10,10 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Control Structures
-
+```{r}
 # if and else: testing a condition and acting on it
 # for: execute a loop a fixed number of times
 # while: execute a loop while a condition is true
+```
 
 # Conditional statements with if-else
 ```{r, eval = FALSE}
@@ -57,7 +58,7 @@ if (x > 2) {
 ```
 
 ## Important Operators 
-
+```{r}
 # Comparison Operators
 # == (equal)
 # != (not equal)
@@ -73,6 +74,8 @@ if (x > 2) {
 
 ## for Loops
 # in R, for loops take an interator variable and assign it successive values from a sequence or vector
+```
+
 ```{r}
 for(i in 0:14){
   print(i)
@@ -99,7 +102,10 @@ for(i in 1:4) print(y[i])
 ```
 
 ## Nested for loops
+```{r}
 # for loops can be nested inside of each other
+```
+
 ```{r}
 q <- matrix(1:10, 4, 5)
 for(i in seq_len(nrow(q))) {
@@ -108,10 +114,14 @@ for(i in seq_len(nrow(q))) {
   }
 }
 ```
+
+```{r}
 # use nested loops for multidimensional data structures
 
 ## while loops
 # while loops begin by testing a condition; if true, then execute loop body; loops exits when condition is false
+```
+
 ```{r}
 count <- 0
 while(count < 14) {
@@ -137,11 +147,14 @@ print(z)
 ```
 
 ## Functions
+```{r}
 # first class objects, which means that they can be treated much like any other R object
 
 # first function
+```
+
 ```{r}
-# definedby using function()
+# defined by using function()
 
  f <- function() {
    ## this is an empty function

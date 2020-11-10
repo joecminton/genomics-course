@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Regular Expression
-
+```{r}
 # a sequence of characters that define a search pattern; usually, such patterns are used by string-searching algorithms for "find" or "find and replace" operations or for input validation
-
+```
 # Base R Functions 
-
+```{r}
 # to deal with regular expressions:
 # * grep(), grepl(): These functions search for matches of a regular expression/pattern in a character vector. grep() returns the indices into the character vector that contain a match or the specific strings that happen to have the match grepl() returns a TRUE/FALSE vector indicating which elements of the character vector contain a match
 # * nregexpr(), gregexpr(): Search a character vector for regular expression matches and return the indices of the string where the match begins and the length of the match
@@ -26,6 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # * str_detect() is essentially equivalent grepl()
 # * str_extract() plays the role of regexpr() and regmatches(), extracting the matches from the output
 # * str_match() does the job of regexec() by provide a matrix containing the parenthesized sub-expressions
+```
 
 ##  14.3 Matching Patterns with Regular Expressions
 ```{r}
@@ -68,12 +69,16 @@ str_view(x, "\\\\")
 ```
 
 # Exercsie 1 from 14.3.1
+```{r}
 # 1. "\" is an escape character in regular expression, finding a specific term; "\\" follwoed by a "." creates the regular expression; "\\\" creates a regular expression with the escape character without something to search for; "\\\\" creates a regular expression with the escape character "\", allowing it to search "\"
+```
 
 # 14.3.2 Anchors
+```{r}
 # use anchors to start or end a string being searched for:
 # * ^ to match the start of the string
 # * $ to match the end of the string
+```
 
 ```{r}
 x <- c("apple", "banana", "pear")
@@ -92,6 +97,7 @@ str_view(x, "apple")
 str_view(x, "^apple$")
 ```
 # Exercise 1 from 14.3.2
+```{r}
 # to find "$^$", you can use "^\\$\\^\\$$"
 
 # 14.3.3 Character Classes and Alternatives
@@ -101,6 +107,7 @@ str_view(x, "^apple$")
 # * [abc] : matches a, b, or c
 # * [^abc] : matches anything except a, b, or c
 # remember, to escape the \ for the string, use \\d or \\s
+```
 
 ```{r}
 # look for a literal character that normally has special meaning in a regular expression
@@ -113,7 +120,10 @@ str_view(x, ".[*]c")
 
 str_view(x, "a[ ]")
 ```
+
+```{r}
 # This works for most (but not all) regex metacharacters: $ . | ? * + ( ) [ {. Unfortunately, a few characters have special meaning even inside a character class and must be handled with backslash escapes: ] \ ^ and -.
+```
 
 ```{r}
 # "|" can be used to pick beween one or more alternative patterns
@@ -139,10 +149,13 @@ str_subset(c("ed", stringr::words), "(^|[^e])ed$")
 str_subset(stringr::words, "i(ng|se)$")
 ```
 # 14.3.4 Repeition
+```{r}
 # controlling how many times a pattern matches:
 # * ?: 0 or 1
 # * +: 1 or more
 # * : 0 or more
+```
+
 ```{r}
 x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
 str_view(x, "CC?")
@@ -155,11 +168,15 @@ str_view(x, "CC+")
 ```{r}
 str_view(x, 'C[LX]+')
 ```
+
+```{r}
 # can specify the number of matches precisely
 # * {n}: exactly n
 # * {n,}: n or more
 # * {,m}: at most m
 # * {n,m}: between n and m
+```
+
 ```{r}
 str_view(x, "C{2}")
 ```
@@ -167,7 +184,11 @@ str_view(x, "C{2}")
 ```{r}
 str_view(x, "C{2,}")
 ```
+
+```{r}
 # put a ? to match the shortest string possible
+```
+
 ```{r}
 str_view(x, "C{2,3}?")
 ```
@@ -177,21 +198,28 @@ str_view(x, 'C[LX]+?')
 ```
 
 # Exercise 1 from 14.3.4
+```{r}
 # Within {n,m} form, ? matches to the shortest string; + would allow for one additional character to be added; * would match the exact string
+```
 
 # 14.3.5 Grouping and backreferences
+```{r}
 # parentheses can create a numbered capturing group (number 1, 2, etc.): a capturing group stores the part of the string matched by the part of the regular expression inside the paratheses
 # can use backreference, \1, \2, etc., to refer back to the same text previosuly matched by capturing group
+```
+
 ```{r}
 str_view(fruit, "(..)\\1", match = TRUE)
 ```
 
 # Exercise 1 from 14.3.5
+```{r}
 # (.)\1\1: matches to a character that shows up 3 times in a row (e.g., zzz)
 # (.)(.)\\2\\1: matches a pair of characters followed by the same pair of characters in reversed order (e.g., cddc)
 # (..)\1: matches any two repeated characters (e.g., v4v4)
 # (.).\\1.\\1: matches a character by any character, the original character, another character, and the original again (e.g., xzxyx)
 # (.)(.)(.).*\\3\\2\\: three matched characters follwoed by 0+ characters of any kind followed by the same three characters in reverse order (e.g., dfg9gfd)
+```
 
 ## 14.4 Tools
 
@@ -222,7 +250,9 @@ no_vowels_2 <- str_detect(words, "^[^aeiou]+$")
 identical(no_vowels_1, no_vowels_2)
 ```
 
+```{r}
 # A common use of str_detect() is to select the elements that match a pattern. You can do this with logical subsetting, or the convenient str_subset() wrapper:
+```
 
 ```{r}
 words[str_detect(words, "x$")]
@@ -242,7 +272,10 @@ df %>%
   filter(str_detect(word, "x$"))
 ```
 
+```{r}
 # str_count(): rather than a simple yes or no, it tells you how many matches there are in a string
+```
+
 ```{r}
 x <- c("apple", "banana", "pear")
 str_count(x, "a")
@@ -291,7 +324,11 @@ words[start_with_vowel & end_with_consonant] %>% head()
 # * Are there any words that contain at least one of each different vowel? none.
 
 # 14.4.2 Extract Matches
+```{r}
+
 # str_extract(): extracts actual text of a match
+```
+
 ```{r}
 length(sentences)
 head(sentences)
@@ -345,7 +382,10 @@ str_view_all(more, colour_matched, match = TRUE)
 ```
 
 # 14.4.3 Grouped matches
+```{r}
 # parantheses can be used for clarifying precedence and for backreferences when matching; also, they can be used to extract parts of a complex match
+```
+
 ```{r}
 noun <- "(a|the) ([^ ]+)"
 
@@ -362,7 +402,10 @@ has_noun %>%
   str_match(noun)
 ```
 
+```{r}
 # can use tidyr::extract() if data is in a tibble; have to name the matches 
+```
+
 ```{r}
 tibble(sentence = sentences) %>% 
   tidyr::extract(
@@ -370,7 +413,10 @@ tibble(sentence = sentences) %>%
     remove = FALSE
   )
 ```
+
+```{r}
 # if you want all matches for each string, use str_match_all
+```
 
 # Exercise 1 from 14.4.3
 ```{r}
@@ -380,7 +426,10 @@ sentences[str_detect(sentences, numbs)] %>%
 ```
 
 # 14.4.4 Replacing matches
+```{r}
 # str_replace() and str_replace_all() permit replacing matches with new strings
+```
+
 ```{r}
 x <- c("apple", "pear", "banana")
 str_replace(x, "[aeiou]", "-")
@@ -390,7 +439,10 @@ str_replace(x, "[aeiou]", "-")
 str_replace_all(x, "[aeiou]", "-")
 ```
 
+```{r}
 # with str_replacce_all(), you can perform mulitple replacements by supplying a name vector
+```
+
 ```{r}
 x <- c("1 house", "2 cars", "3 people")
 str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
@@ -409,7 +461,10 @@ str_replace_all("first/second/third", "/", "\\\\")
 ```
 
 # 14.4.5 Splitting
+```{r}
 #  use str_split to split a string up into pieces
+```
+
 ```{r}
 sentences %>%
   head(5) %>% 
