@@ -36,3 +36,5 @@ knitr::opts_chunk$set(echo = TRUE)
 [Lab 9: Programming in R-Regular Expressions](Lab9_jm.html)
 
 [Lab 9x: Programming in R-Control Structures and Functions](lab9x_jm.html)
+
+[Lab 10: Population genomics based on high throughput sequencing (HTS)](Lab10_jm.html)

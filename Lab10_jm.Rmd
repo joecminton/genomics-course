@@ -1,0 +1,376 @@
+---
+title: "Lab 10: Population genomics based on high throughput sequencing (HTS)"
+auhor: "Joe Minton"
+date: "10/02/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Part 1 - Reading VCF Data
+```{r}
+# genetic variation data is typically stored in vairant call format (VCF)
+```
+
+# VCF File Structure
+```{r}
+# three sections of a VCF file: vcf header, fix region, and gt region
+
+# vcf meta region is located at the top of the file and contains meta-data describing the body of the file; it defines abbreviations used elsewhere in the fale and documents software used
+
+# below the metadata region, the data is tabular: first eight columns contain info about each variant and has fixed samples - the fixed region is required in a VCF file. 
+# beginning at column 10, there is information for each sample and variant; the organization of ach cell containing a geneotype and associated info is specified in column 9, the FORMAT column
+```
+
+```{r}
+library(vcfR)
+```
+
+```{r}
+data(vcfR_example)
+vcf
+```
+
+# The Meta Region
+```{r}
+# contains info about the file, its creation, and info to interpret abbreviations elsewhere in file
+
+strwrap(vcf@meta[1:7])
+```
+
+```{r}
+# used to press long lines that are not easy to view
+queryMETA(vcf)
+
+# attempts to summarize the meta information that is is usefu for comprehension of the file's contents
+```
+
+```{r}
+queryMETA(vcf, element = "DP")
+
+# element parameter included
+```
+
+```{r}
+queryMETA(vcf, element = 'FORMAT=<ID=DP')
+
+#  nice included in the queryMETA() function, but we can se nice = FALSE to see raw data
+```
+
+# The Fix Region
+```{r}
+# contains info for each variant which is sometimes summarized over all samples
+# first eight columns are tilted CHROM, POS, ID, REF, QUAL, FIILTER, and INFO
+# CHROM and POS: tell you location of variant by chromosome and position
+# REF and ALT: indicate reference and alternate allelic states for a diploid sample
+# QUAL: summarizes quality of each variant over all samples
+# FILTER: could contain info on whether a variant has passed some form of quality assessment
+```
+
+```{r}
+head(getFIX(vcf))
+
+# getFIX() suppresses columns to prevent long columns
+```
+
+# The gt region
+```{r}
+# the gt (genotype) region contains info about each variant for each sample
+
+vcf@gt[1:6, 1:4]
+```
+
+# vcfR
+```{r}
+# use read.vcfr() to put into memory
+
+download.file("https://osf.io/td5sx/download", destfile = "pinfsc50_filtered.vcf.gz")
+
+vcf <- read.vcfR("data/pinfsc50_filtered.vcf.gz")
+
+# use head to summarize the info in the three VCF regions
+
+head(vcf)
+
+# after manipulating, save the VCF function using write.vcf()
+
+write.vcf(vcf, "myVCFdata_filtered.vcf.gz")
+```
+
+## Exercises Part 1
+```{r}
+# 1. 
+?read.vcfR
+```
+
+```{r}
+# 2.
+queryMETA(vcf, element = "AD")
+```
+
+```{r}
+# 3.
+tail(vcf@fix)
+```
+
+```{r}
+# 4.
+plot(vcf)
+# QUAL can help us being seeing the qualities of genes. In this sample, there are high quality and low quality genes
+```
+
+```{r}
+# 5.
+colnames(vcf@gt)
+```
+
+## Part 2 - Analysis of Genome Data
+
+# Opening and examining data
+```{r}
+library(vcfR)
+vcf <- read.vcfR("data/pinfsc50_filtered.vcf.gz")
+
+vcf
+```
+
+# Converting VCF data to a genlight object
+```{r}
+# R package adegenet is a popular R package used for population genetic analysis and it works on data structures called "genlight" objects
+# use function vcfR2genlight() to convert vcf file to genlight object
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("deldir")
+BiocManager::install("adegenet")
+library(deldir)
+library(adegenet)
+
+x <- vcfR2genlight(vcf)
+```
+
+```{r}
+x
+```
+```{r}
+# a genlight objects supports biallelic, or binary, variants 
+# in VCF, alleles are delimited by either a pipe or a foward slash; genlight objects record genotypes as 0, 1, and 2 due to biallelic loci, which corresponde to homozygous or heterozygous
+```
+
+```{r}
+# vcfR
+gt <- extract.gt(vcf, element = "GT")
+gt[c(2, 6, 18), 1:3]
+```
+
+```{r}
+# genlight
+t(as.matrix(x))[c(1, 5, 17), 1:3]
+```
+
+```{r}
+# can use (t()) to make the matrix become variants as rows and samples as columns like VCF output; genlight is flipped
+```
+
+```{r}
+# to get population data
+
+pop(x) <- as.factor(c("us", "eu", "us", "af", "eu", "us", "mx", "eu", "eu", "sa", "mx", "sa", "us", "sa", "Pmir", "us", "eu", "eu"))
+popNames(x)
+```
+
+```{r}
+# as.factor() transforms vectors in a factor that can group things together; using popNames gives vector where each population is represented only once
+
+# for ploidy: in VCF data, each variant is independent; in genlight, different samples may be of different ploidy levels, but within each sample of its loci must be the same ploidy level
+
+ploidy(x) <- 2
+```
+
+# Distance matrices
+```{r}
+
+# to create a pairwise genetic distance matrix for individuals or populations from a genlight object
+
+x.dist <- dist(x)
+```
+
+```{r}
+# did not specify what the x is; to understand the function dist
+
+?dist
+```
+
+```{r, eval = FALSE, warning = FALSE}
+# to create other distance matrices from genlights, use function bit.wise() in poppr package 
+
+library(poppr)
+?poppr::bitwise.dist
+
+x.dist <- poppr::bitwise.dist(x)
+```
+
+# chromR objects 
+
+## Creating chromR objects
+```{r}
+# begin by locating data from pinfsc50 package
+library(pinfsc50)
+library(vcfR)
+example("pinfsc50")
+
+# find the files
+
+vcf_file <- system.file("extdata", "pinf_sc50.vcf.gz", package = "pinfsc50")
+dna_file <- system.file("extdata", "pinf_sc50.fasta", package = "pinfsc50")
+gff_file <- system.file("extdata", "pinf_sc50.gff", package = "pinfsc50")
+
+# input the files
+
+vcf <- read.vcfR(vcf_file, verbose = FALSE)
+dna <- ape::read.dna(dna_file, format = "fasta")
+gff <- read.table(gff_file, sep="\t", quote="")
+
+# create a chromR object
+
+chrom <- create.chromR(name="Supercontig", vcf=vcf, seq=dna, ann=gff, verbose=TRUE)
+
+# can verify the contents by show method
+
+chrom
+```
+
+
+# two ways to plot chromR objects
+```{r}
+#1.
+plot(chrom)
+
+# QUAL used to judge quality of variants
+```
+
+```{r}
+# 2. 
+chromoqc(chrom, dp.alpha = 66)
+```
+
+# Processing chromR objects
+```{r}
+# creation loads data into chromR obkect and only is required once
+# processing the chromR object generates summaries of data and will need to updated as the chromR is updated
+
+chrom <- proc.chromR(chrom, verbose = TRUE)
+```
+```{r}
+plot(chrom)
+
+# identical to original after processing
+```
+
+```{r}
+# chromoqc will show nucleotides (A, C, G or T) now after processing as well as variant densities and nucleotide content
+
+chromoqc(chrom, dp.alpha = 66)
+```
+
+```{r}
+# omitting low quality variants to compare to original
+
+vcf <- read.vcfR("pinfsc50_filtered.vcf.gz", verbose = FALSE)
+chrom <- create.chromR(name="Supercontig", vcf=vcf, seq=dna, ann=gff, verbose=FALSE)
+chrom <- proc.chromR(chrom, verbose = FALSE)
+chromoqc(chrom, dp.alpha = 66)
+
+# smaller quantity of data, but increase in read depth that is uniform and lacks large variation in depth
+```
+
+# Tabular summaries
+```{r}
+# when processing chromR object, two forms of tabular data are created
+# 1. summaries are made on a per variant basis, including sample size, allele counts, heterozygosity and effect size
+# 2. summaries are made on a per window basis that include nucleotide content per window, number of genic sites per window and the number of variants per window
+```
+
+```{r}
+head(chrom@var.info)
+```
+
+```{r}
+head(chrom@win.info)
+```
+
+# Genetic differentiation
+```{r}
+# want to test for heterozygosity to see population diversity
+# genetic_diff() was implemented to measure population diversity and differentiation 
+# heterozygotes are weighted by the number of alleles observed in each population
+# hierfstat::pairwise.fst() uses the number of individuals observed in each population to weigh the heterozygotes 
+# using the number of alleles observed instead of number of individuals, remove assumption about how many alleles each individual may contribute - accomodate samples using mixed ploidy
+
+data(vcfR_example)
+pop <- as.factor(c("us", "eu", "us", "af", "eu", "us", "mx", "eu", "eu", "sa", "mx", "sa", "us", "sa", "Pmir", "us", "eu", "eu"))
+myDiff <- genetic_diff(vcf, pops = pop, method = 'nei')
+knitr::kable(head(myDiff[,1:15]))
+```
+
+```{r}
+# function returns the chromosome and position of each variant
+# NaN occurs due to populations with zero alleles that are heterozygotes
+knitr::kable(head(myDiff[,16:19]))
+```
+
+```{r}
+# to avoid NaN, omit small samples or large samples that contain a large amount of missing data
+
+knitr::kable(round(colMeans(myDiff[,c(3:9,16,19)], na.rm = TRUE), digits = 3))
+```
+
+```{r}
+library(reshape2)
+library(ggplot2)
+
+dpf <- melt(myDiff[,c(3:8,19)], varnames=c('Index', 'Sample'), value.name = 'Depth', na.rm=TRUE)
+```
+
+```{r}
+z <- ggplot(dpf, aes(x=variable, y=Depth)) + geom_violin(fill="#2ca25f", adjust = 1.2)
+z <- z + xlab("")
+z <- z + ylab("")
+z <- z + theme_bw()
+z
+```
+
+## Exercises Part 2
+```{r}
+# 1.
+plot(getPOS(vcf), myDiff$Gprimest,  pch = 20, col = "#1E90FF44", xlab = "", ylab = "", ylim = c(0, 1), xaxt = "n")
+axis(side = 1, at = seq(0, 1e5, by = 1e4), labels = seq(0, 100, by = 10))
+title(xlab='Genomic position (Kbp)')
+title(ylab = expression(italic("G'"["ST"])))
+```
+
+```{r}
+# 2.
+table(pop)
+
+# the sample is extremely small
+```
+
+```{r}
+# 3.
+chromoqc(chrom, dp.alpha = 66, xlim = c(2e05, 4e05))
+```
+
+```{r}
+queryMETA(vcf)
+```
+
+
+
+
+
+
+
+
