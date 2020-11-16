@@ -1,0 +1,283 @@
+---
+title: "Lab 11: Microbiome Analysis using dada2 and phyloseq"
+author: "Joe Minton"
+Date: "11/09/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+BiocManager::install("phyloseq")
+BiocManager::install("dada2")
+BiocManager::install("DECIPHER")
+```
+
+# DADA2 Tutorial
+```{r}
+library(dada2); packageVersion("dada2")
+```
+
+```{r}
+path <- "data/MiSeq_SOP"
+list.files(path)
+```
+
+```{r}
+# reading and manipulating data
+
+# Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq
+
+fnFs <- sort(list.files(path, pattern="_R1_001.fastq", full.names = TRUE))
+
+fnRs <- sort(list.files(path, pattern="_R2_001.fastq", full.names = TRUE))
+
+# Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq
+
+sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
+```
+
+## Inspect Read Quality Profiles
+```{r}
+# start by visualizing data
+plotQualityProfile(fnFs[1:2])
+
+# the greeb line represent mean quality score; orange lines shows quartiles of the quality score distribution; red shows scaled proportion of reads that extend to a position
+```
+
+```{r}
+# trim last few or first few nucleotides to avoid less controlled errors
+plotQualityProfile(fnRs[1:2])
+```
+
+# Filter and Trim
+```{r}
+# truncate forward reads at position 240 and trimming 10 nucleotides
+
+# Place filtered files in filtered/ subdirectory
+
+filtFs <- file.path(path, "filtered", paste0(sample.names, "_F_filt.fastq.gz"))
+
+filtRs <- file.path(path, "filtered", paste0(sample.names, "_R_filt.fastq.gz"))
+
+names(filtFs) <- sample.names
+names(filtRs) <- sample.names
+```
+
+```{r}
+# maxEE is looking for errors 
+
+out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, truncLen=c(240,160), maxN=0, maxEE=c(2,2), truncQ=2, rm.phix=TRUE,compress=TRUE, multithread=TRUE) 
+
+head(out)
+```
+
+# Learning Error Rates
+```{r}
+# learnErrors learns error model grom dta by atlernating estimation of error rates and inference of sample composition until convergence on a jointly consistent solution
+
+errF <- learnErrors(filtFs, multithread=TRUE)
+
+errR <- learnErrors(filtRs, multithread=TRUE)
+```
+
+```{r}
+# visualize estimated error rates
+plotErrors(errF, nominalQ=TRUE)
+
+# black line shows estimated error rates after convergence; red line shows error rates expected under nominal definition with Q-score
+```
+
+# Sample Inference
+```{r}
+dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
+```
+
+```{r}
+dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
+```
+
+```{r}
+# inspecting returned dada-class object
+dadaFs[[1]]
+```
+
+# Merge paired reads
+```{r}
+# merging is done by aligning denoised forward reads with reverse-complement of the corresponding denoised reversed reads and then constructing the emrged contig sequences
+
+# merging can only be done if the overlaps have at least 12 bases and are identical to each other in the overlap regions
+
+mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
+
+# Inspect the merger data.frame from the first sample
+
+head(mergers[[1]])
+```
+
+# Constrcut Sequence Table
+```{r}
+# construct an amplicon sequence variance (ASV) table
+
+seqtab <- makeSequenceTable(mergers)
+
+dim(seqtab)
+```
+
+```{r}
+# Inspect distribution of sequence lengths
+
+table(nchar(getSequences(seqtab)))
+```
+
+## Remove chimeras
+```{r}
+# chimeric sequences are identified if they can be exactly reconstructed by combining a left-segement and right-segment from two more abundance parent sequences
+
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
+
+dim(seqtab.nochim)
+
+```
+
+```{r}
+sum(seqtab.nochim)/sum(seqtab)
+```
+
+## Track reads through pipeline
+```{r}
+getN <- function(x) sum(getUniques(x))
+
+track <- cbind(out, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
+
+colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+
+rownames(track) <- sample.names
+
+head(track)
+```
+
+## Assign taxonomy
+```{r}
+# downloading file
+taxa <- assignTaxonomy(seqtab.nochim, "data_big/silva_nr99_v138_train_set.fa", multithread=TRUE)
+```
+
+```{r}
+taxa.print <- taxa 
+# Removing sequence rownames for display only
+
+rownames(taxa.print) <- NULL
+
+head(taxa.print)
+```
+## DECIPHER
+```{r}
+library(DECIPHER); packageVersion("DECIPHER")
+```
+
+```{r}
+dna <- DNAStringSet(getSequences(seqtab.nochim))
+# Create a DNAStringSet from the ASVs
+
+load("data_big/SILVA_SSU_r138_2019.RData")
+
+ids <- IdTaxa(dna, trainingSet, strand="top", processors=NULL, verbose=FALSE) 
+# use all processors
+
+ranks <- c("domain", "phylum", "class", "order", "family", "genus", "species") # ranks of interest
+
+# Convert the output object of class "Taxa" to a matrix analogous to the output from assignTaxonomy
+
+taxid <- t(sapply(ids, function(x) {
+        m <- match(ranks, x$rank)
+        taxa <- x$taxon[m]
+        taxa[startsWith(taxa, "unclassified_")] <- NA
+        taxa
+}))
+colnames(taxid) <- ranks; rownames(taxid) <- getSequences(seqtab.nochim)
+```
+
+## Evaluating accuracy
+```{r}
+# evaluating mock community
+unqs.mock <- seqtab.nochim["Mock",]
+unqs.mock <- sort(unqs.mock[unqs.mock>0], decreasing=TRUE) # Drop ASVs absent in the Mock
+cat("DADA2 inferred", length(unqs.mock), "sample sequences present in the Mock community.\n")
+```
+
+```{r}
+mock.ref <- getSequences(file.path(path, "HMP_MOCK.v35.fasta"))
+match.ref <- sum(sapply(names(unqs.mock), function(x) any(grepl(x, mock.ref))))
+cat("Of those,", sum(match.ref), "were exact matches to the expected reference sequences.\n")
+```
+
+## Bonus: Handoff to phyloseq
+```{r}
+library(phyloseq); packageVersion("phyloseq")
+library(Biostrings); packageVersion("Biostrings")
+library(ggplot2); packageVersion("ggplot2")
+```
+
+```{r}
+theme_set(theme_bw())
+```
+
+```{r}
+# constructing a simple sample data.frame
+samples.out <- rownames(seqtab.nochim)
+subject <- sapply(strsplit(samples.out, "D"), `[`, 1)
+gender <- substr(subject,1,1)
+subject <- substr(subject,2,999)
+day <- as.integer(sapply(strsplit(samples.out, "D"), `[`, 2))
+samdf <- data.frame(Subject=subject, Gender=gender, Day=day)
+samdf$When <- "Early"
+samdf$When[samdf$Day>100] <- "Late"
+rownames(samdf) <- samples.out
+```
+
+```{r}
+# constructing phyloseq object from dada2 output
+ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), 
+               sample_data(samdf), 
+               tax_table(taxa))
+ps <- prune_samples(sample_names(ps) != "Mock", ps) # Remove mock sample
+```
+
+```{r}
+# storing DNA sequences as ASs in the refseq slot of phyloseq object and renaming taxa to short string to make it appears in tables and plots
+
+dna <- Biostrings::DNAStringSet(taxa_names(ps))
+names(dna) <- taxa_names(ps)
+ps <- merge_phyloseq(ps, dna)
+taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
+ps
+```
+
+```{r}
+# visualizing alpha-diversty
+
+plot_richness(ps, x="Day", measures=c("Shannon", "Simpson"), color="When")
+```
+
+```{r}
+# ordinate = picks out clear separation between early and late sample
+
+# Transform data to proportions as appropriate for Bray-Curtis distances
+
+ps.prop <- transform_sample_counts(ps, function(otu) otu/sum(otu))
+ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
+
+plot_ordination(ps.prop, ord.nmds.bray, color="When", title="Bray NMDS")
+```
+
+```{r}
+# bar plot
+top20 <- names(sort(taxa_sums(ps), decreasing=TRUE))[1:20]
+ps.top20 <- transform_sample_counts(ps, function(OTU) OTU/sum(OTU))
+ps.top20 <- prune_taxa(top20, ps.top20)
+plot_bar(ps.top20, x="Day", fill="Family") + facet_wrap(~When, scales="free_x")
+```
+

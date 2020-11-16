@@ -1,0 +1,26 @@
+Package: DECIPHER
+Type: Package
+Title: Tools for curating, analyzing, and manipulating biological
+        sequences
+Version: 2.18.1
+Date: 2020-10-28
+Author: Erik Wright
+Maintainer: Erik Wright <eswright@pitt.edu>
+biocViews: Clustering, Genetics, Sequencing, DataImport, Visualization,
+        Microarray, QualityControl, qPCR, Alignment, WholeGenome,
+        Microbiome, ImmunoOncology, GenePrediction
+Description: A toolset for deciphering and managing biological sequences.
+Depends: R (>= 3.5.0), Biostrings (>= 2.35.12), RSQLite (>= 1.1),
+        stats, parallel
+Imports: methods, DBI, S4Vectors, IRanges, XVector
+LinkingTo: Biostrings, S4Vectors, IRanges, XVector
+License: GPL-3
+ByteCompile: true
+git_url: https://git.bioconductor.org/packages/DECIPHER
+git_branch: RELEASE_3_12
+git_last_commit: 6a70842
+git_last_commit_date: 2020-10-28
+Date/Publication: 2020-10-29
+NeedsCompilation: yes
+Packaged: 2020-10-30 00:29:35 UTC; biocbuild
+Built: R 4.0.3; x86_64-apple-darwin17.0; 2020-10-30 13:47:42 UTC; unix
