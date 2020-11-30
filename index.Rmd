@@ -41,4 +41,4 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [Lab 11: Microbiome Analysis using dada2 and phyloseq](lab11_jm.html)
 
-[Lab 12:Network Analysis using Cytoscape](lab12_jm.html)
+[Lab 12: Network Analysis using Cytoscape](lab12_jm.html)
