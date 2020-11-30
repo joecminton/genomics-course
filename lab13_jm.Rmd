@@ -1,0 +1,41 @@
+---
+title: "Lab 13: Sprucing up your Rmarkdown and Github Pages"
+author: "Joe Minton"
+date: "11/23/2020"
+output:
+  prettydoc::html_pretty:
+    theme: Architect
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Graphs from CytoScape and RCy3
+
+![](images/renamed_vignette.png)
+
+
+
+
+![Ovarian](images/StringNetworkovariancancer-2.png)
+
+
+
+
+![String Protein](images/stringprotein.png)
+
+
+
+
+![String Disease](images/stringdisease.png)
+
+
+
+
+
+
+
+
+    
